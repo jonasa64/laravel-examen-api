@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreInvitationRequest;
+use App\Http\Requests\UpdateInvitationRequest;
 use App\Models\Invitation;
 use Illuminate\Http\Request;
 
@@ -42,15 +43,15 @@ class InvitationController extends Controller
 
     public function show(Invitation $invitation)
     {
-        $invitationWithPersons = $invitation::with('invitedPerson')->get();
+        $invitationWithPersons = $invitation->fresh('InvitedPerson');
 
         return \Response::json(["data" => $invitationWithPersons] , 200);
     }
 
 
-    public function update(StoreInvitationRequest $request, Invitation $invitation)
+    public function update(UpdateInvitationRequest $request, Invitation $invitation)
     {
-        if(auth()->user()->id == $invitation->user->id && $request->validated()){
+        if($invitation->isOwner() && $request->validated()){
             $updatedInvitation = $invitation->update([
                 'title' => $request->title,
                 'date' => $request->date,
@@ -60,14 +61,13 @@ class InvitationController extends Controller
 
             if($request->hasFile('image')){
                 $updatedInvitation->clearMediaCollection('images');
-                $updatedInvitation->addMediaFromRequest('image')->toMediaCollection('images');
-                $updatedInvitation->image = $invitation->image();
+
             }
 
             return \Response::json(["data" => $updatedInvitation], 200);
         }
 
-        return \Response::json(["data" => "you can not do this"], 401);
+        return \Response::json(["data" => "you can not do this"], 403);
 
     }
 
@@ -76,7 +76,7 @@ class InvitationController extends Controller
     {
         $invitation = Invitation::where('id', '=', $request->input('id'))->firstOrFail();
 
-        if(auth()->user()->id == $invitation->user->id){
+        if($invitation->isOwner()){
             $invitation->clearMediaCollection('images');
             $invitation->delete();
             return \Response::json(['data' => null], 200);
@@ -84,7 +84,7 @@ class InvitationController extends Controller
 
 
 
-        return \Response::json(["data" => "you can not do that"], 401);
+        return \Response::json(["data" => "you can not do that"], 403);
 
     }
 }
