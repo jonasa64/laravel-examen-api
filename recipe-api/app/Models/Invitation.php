@@ -31,4 +31,8 @@ class Invitation extends Model implements HasMedia
 
     }
 
+    public function isOwner(){
+        return auth()->id() == $this->user_id;
+    }
+
 }
