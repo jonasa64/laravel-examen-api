@@ -27,7 +27,9 @@ class StoreInvitationRequest extends FormRequest
             'title' => 'required',
             'date' => 'required',
             'location' => 'required',
-            'user_id' => 'required'
+            'user_id' => 'required',
+            'image' => 'image|nullable',
+            'description' => 'nullable'
         ];
     }
 }
