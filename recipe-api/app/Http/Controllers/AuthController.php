@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 
 class AuthController extends Controller
@@ -21,7 +22,6 @@ class AuthController extends Controller
             'email' => $validatedRequest['email'],
             'password' => bcrypt($validatedRequest['password'])
         ]);
-
         $token = $user->createToken('token')->plainTextToken;
 
         return \Response::json(['token' => $token, 'user' => $user], 201);
@@ -34,11 +34,13 @@ class AuthController extends Controller
         ]);
 
 
+
         $user = User::where('email', $validatedRequest['email'])->first();
 
         if(!$user || !Hash::check($validatedRequest['password'], $user->password)){
             return \Response::json(['message' => 'Bad creds'], 401);
         }
+
         $token = $user->createToken('token')->plainTextToken;
 
         return \Response::json(['token' => $token, 'user' => $user]);
@@ -47,8 +49,7 @@ class AuthController extends Controller
 
     public function logout(Request $request){
         auth()->user()->tokens()->delete();
-
-        return \Response::json(["data" => "you are now logged out"], 200);
+        return \Response::json(["data" => null], 204);
     }
 
 }
