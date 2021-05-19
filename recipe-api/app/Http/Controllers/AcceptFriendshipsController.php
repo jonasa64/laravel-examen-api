@@ -24,7 +24,13 @@ class AcceptFriendshipsController extends Controller
             'sender_id'=> $sender->id,
             'recipient_id' => auth()->id()
         ])->update(['status' => 'accepted']);
-    return \Response::json([ 'friendship_status' => 'accepted'], 200);
+
+        $friendships =  Fiendship::with('sender')->where([
+
+            'recipient_id' => auth()->id()
+
+        ])->get();
+    return \Response::json([ 'data' => $friendships], 200);
 
     }
 
