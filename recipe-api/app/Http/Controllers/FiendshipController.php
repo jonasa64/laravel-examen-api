@@ -20,7 +20,7 @@ class FiendshipController extends Controller
            'recipient_id' =>  $recipient->id
         ]);
 
-        return \Response::json(["data" => $friendship->status], 201);
+        return \Response::json(["data" => $friendship->fresh()->status], 201);
     }
 
     public function destroy(User $user)
