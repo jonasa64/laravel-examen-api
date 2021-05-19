@@ -48,7 +48,6 @@ class InvitationController extends Controller
     public function show(Invitation $invitation)
     {
         $invitationWithPersons = $invitation->fresh('InvitedPerson');
-
         return \Response::json(["data" => $invitationWithPersons] , 200);
     }
 
@@ -56,20 +55,17 @@ class InvitationController extends Controller
     public function update(UpdateInvitationRequest $request, Invitation $invitation)
     {
         if($invitation->isOwner() && $request->validated()){
-            $updatedInvitation = $invitation->update([
+                  $invitation->update([
                 'title' => $request->title,
                 'date' => $request->date,
                 'location' => $request->location,
+                'image' => $request->image,
+                'description' => $request->description,
                 'user_id' => auth()->user()->id
             ]);
 
-            if($request->has('image')){
-                $invitation->image = $request->input('image');
-                $invitation->save();
-
-            }
-
-            return \Response::json(["data" => $updatedInvitation], 200);
+             $invite = Invitation::where('id', '=', $invitation->id)->first();
+                  return \Response::json(["data" => $invite->fresh('InvitedPerson')], 200);
         }
 
         return \Response::json(["data" => "you can not do this"], 403);
@@ -77,13 +73,12 @@ class InvitationController extends Controller
     }
 
 
-    public function destroy(Request $request)
+    public function destroy(Invitation $invitation)
     {
-        $invitation = Invitation::where('id', '=', $request->input('id'))->firstOrFail();
 
         if($invitation->isOwner()){
             $invitation->delete();
-            return \Response::json(['data' => null], 200);
+            return \Response::json(['data' => null], 204);
         }
 
 
