@@ -11,12 +11,16 @@ class InvitedPersonController extends Controller
 
 
     public function store(Request $request){
-       $invitedPerson = InvitedPerson::create([
-            'invitation_id' => $request->input('invitation_id'),
-            'user_id' => $request->input('user_id')
-        ]);
+        for($i = 0; $i < count($request->data); $i++){
+           $invitedPersons[] = [
+               "invitation_id" => $request->id,
+               "user_id" => $request->data[$i]
+               ];
+       }
 
-        return \Response::json(['data' => $invitedPerson], 200);
+        InvitedPerson::insert($invitedPersons);
+
+        return \Response::json(['data' => "invitations created"], 201);
     }
 
     public function update(Request $request, InvitedPerson $invitedPerson){
