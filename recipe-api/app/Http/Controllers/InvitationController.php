@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreInvitationRequest;
 use App\Http\Requests\UpdateInvitationRequest;
 use App\Models\Invitation;
+use App\Models\InvitedPerson;
 use Illuminate\Http\Request;
 
 
@@ -14,7 +15,8 @@ class InvitationController extends Controller
     {
        $invitations = auth()->user()->invitations;
 
-       return \Response::json(['data' => $invitations], 200);
+       $invitedTo = InvitedPerson::where(['user_id' => auth()->id()])->get()->fresh('invitations');
+       return \Response::json(['data' => $invitations, 'invitedTo' => $invitedTo], 200);
     }
 
     public function store(StoreInvitationRequest $request)

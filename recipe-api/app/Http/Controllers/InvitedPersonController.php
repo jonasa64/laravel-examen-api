@@ -18,8 +18,6 @@ class InvitedPersonController extends Controller
                ];
        }
 
-        InvitedPerson::insert($invitedPersons);
-
         return \Response::json(['data' => "invitations created"], 201);
     }
 
