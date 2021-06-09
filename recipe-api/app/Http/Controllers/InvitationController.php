@@ -6,7 +6,7 @@ use App\Http\Requests\StoreInvitationRequest;
 use App\Http\Requests\UpdateInvitationRequest;
 use App\Models\Invitation;
 use App\Models\InvitedPerson;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 
 class InvitationController extends Controller
@@ -15,13 +15,12 @@ class InvitationController extends Controller
     {
        $invitations = auth()->user()->invitations;
 
-       $invitedTo = InvitedPerson::where(['user_id' => auth()->id()])->get()->fresh('invitations');
+        $invitedTo = DB::table('invited_persons')->join('invitations', 'invitation_id', '=', 'invitations.id')->select('invited_persons.*', 'invitations.*')->where('invited_persons.user_id', '=', auth()->id())->get();
        return \Response::json(['data' => $invitations, 'invitedTo' => $invitedTo], 200);
     }
 
     public function store(StoreInvitationRequest $request)
     {
-
         if(auth()->user() && $request->validated()){
             $invitation = Invitation::create([
                 'title' => $request->title,
@@ -43,13 +42,12 @@ class InvitationController extends Controller
         }
 
         return \Response::json(["data" => 'pleas log in'], 401);
-
     }
 
 
     public function show(Invitation $invitation)
     {
-        $invitationWithPersons = $invitation->fresh('InvitedPerson');
+        $invitationWithPersons = $invitation->fresh('InvitedPersons');
         return \Response::json(["data" => $invitationWithPersons] , 200);
     }
 
@@ -66,8 +64,7 @@ class InvitationController extends Controller
                 'user_id' => auth()->user()->id
             ]);
 
-             $invite = Invitation::where('id', '=', $invitation->id)->first();
-                  return \Response::json(["data" => $invite->fresh('InvitedPerson')], 200);
+            return \Response::json(["data" => auth()->user()->invitations->fresh('InvitedPerson')], 200);
         }
 
         return \Response::json(["data" => "you can not do this"], 403);

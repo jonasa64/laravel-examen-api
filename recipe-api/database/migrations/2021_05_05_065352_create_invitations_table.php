@@ -20,7 +20,7 @@ class CreateInvitationsTable extends Migration
             $table->string('image')->nullable();
             $table->text('description')->nullable();
             $table->string('location');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->index('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

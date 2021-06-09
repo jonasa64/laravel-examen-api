@@ -10,11 +10,14 @@ class InvitedPerson extends Model
     use HasFactory;
     protected $table = 'invited_persons';
     protected $guarded = [];
-    public function invitation(){
+
+    public function invitations()
+    {
         return $this->belongsTo(Invitation::class);
     }
 
-    public function users(){
+    public function users()
+    {
         return $this->hasMany(User::class);
     }
 }

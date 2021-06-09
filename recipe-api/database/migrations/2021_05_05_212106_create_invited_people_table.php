@@ -16,7 +16,7 @@ class CreateInvitedPeopleTable extends Migration
         Schema::create('invited_persons', function (Blueprint $table) {
             $table->id();
             $table->enum('status', ['accepted', 'pending', 'rejected'])->default('pending');
-            $table->foreignId('invitation_id')->constrained('invitations')->onDelete('cascade');
+            $table->foreignId('invitation_id')->index('invitation_id')->constrained('invitations')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });

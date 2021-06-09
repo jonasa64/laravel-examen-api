@@ -11,15 +11,18 @@ class Invitation extends Model
 
     use HasFactory;
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function invitedPerson(){
+    public function invitedPersons()
+    {
         return $this->hasMany(InvitedPerson::class);
     }
 
-    public function isOwner(){
+    public function isOwner()
+    {
         return auth()->id() == $this->user_id;
     }
 
