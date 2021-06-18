@@ -16,7 +16,7 @@ class AcceptFriendshipsController extends Controller
 
         ])->get();
 
-        return \Response::json(["data" => $friendships], 200);
+        return response()->json(["data" => $friendships], 200);
     }
 
     public function store(User $sender){
@@ -30,7 +30,7 @@ class AcceptFriendshipsController extends Controller
             'recipient_id' => auth()->id()
 
         ])->get();
-    return \Response::json([ 'data' => $friendships], 200);
+    return response()->json([ 'data' => $friendships], 200);
 
     }
 
@@ -43,7 +43,7 @@ class AcceptFriendshipsController extends Controller
 
         ])->update(['status' => 'denied']);
 
-        return \Response::json([
+        return response()->json([
 
             'friendship_status' => 'denied'
 

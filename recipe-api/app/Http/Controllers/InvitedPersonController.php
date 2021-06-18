@@ -21,7 +21,7 @@ class InvitedPersonController extends Controller
             ];
         }
         InvitedPerson::insert($invitedPersons);
-        return \Response::json(['data' => "invitations created"], 201);
+        return response()->json(['data' => "invitations created"], 201);
     }
 
     public function update(Request $request, Invitation $invitedPerson)
@@ -30,7 +30,7 @@ class InvitedPersonController extends Controller
 
         $invitedTo = DB::table('invited_persons')->join('invitations', 'invitation_id', '=', 'invitations.id')->select('invited_persons.*', 'invitations.*')->where('invited_persons.user_id', '=', auth()->id())->get();
 
-        return \Response::json(['invitedTo' => $invitedTo], 200);
+        return response()->json(['invitedTo' => $invitedTo], 200);
 
 
     }

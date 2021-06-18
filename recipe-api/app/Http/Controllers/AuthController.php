@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 
 
 class AuthController extends Controller
@@ -24,7 +23,7 @@ class AuthController extends Controller
         ]);
         $token = $user->createToken('token')->plainTextToken;
 
-        return \Response::json(['token' => $token, 'user' => $user], 201);
+        return response()->json(['token' => $token, 'user' => $user], 201);
     }
 
     public function login(Request $request){
@@ -43,13 +42,13 @@ class AuthController extends Controller
 
         $token = $user->createToken('token')->plainTextToken;
 
-        return \Response::json(['token' => $token, 'user' => $user]);
+        return response()->json(['token' => $token, 'user' => $user]);
 
     }
 
     public function logout(Request $request){
         auth()->user()->tokens()->delete();
-        return \Response::json(["data" => null], 204);
+        return response()->json(["data" => null], 204);
     }
 
 }

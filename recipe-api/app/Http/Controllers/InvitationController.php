@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreInvitationRequest;
 use App\Http\Requests\UpdateInvitationRequest;
 use App\Models\Invitation;
-use App\Models\InvitedPerson;
 use Illuminate\Support\Facades\DB;
 
 
@@ -16,7 +15,7 @@ class InvitationController extends Controller
        $invitations = auth()->user()->invitations;
 
         $invitedTo = DB::table('invited_persons')->join('invitations', 'invitation_id', '=', 'invitations.id')->select('invited_persons.*', 'invitations.*')->where('invited_persons.user_id', '=', auth()->id())->get();
-       return \Response::json(['data' => $invitations, 'invitedTo' => $invitedTo], 200);
+       return response()->json(['data' => $invitations, 'invitedTo' => $invitedTo], 200);
     }
 
     public function store(StoreInvitationRequest $request)
@@ -38,17 +37,17 @@ class InvitationController extends Controller
 
             $invitation->save();
 
-            return \Response::json(["data" => $invitation], 201);
+            return response()->json(["data" => auth()->user()->invitations], 201);
         }
 
-        return \Response::json(["data" => 'pleas log in'], 401);
+        return response()->json(["data" => 'pleas log in'], 401);
     }
 
 
     public function show(Invitation $invitation)
     {
         $invitationWithPersons = $invitation->fresh('InvitedPersons');
-        return \Response::json(["data" => $invitationWithPersons] , 200);
+        return response()->json(["data" => $invitationWithPersons] , 200);
     }
 
 
@@ -64,10 +63,10 @@ class InvitationController extends Controller
                 'user_id' => auth()->user()->id
             ]);
 
-            return \Response::json(["data" => auth()->user()->invitations->fresh('InvitedPerson')], 200);
+            return response()->json(["data" => auth()->user()->invitations->fresh('InvitedPerson')], 200);
         }
 
-        return \Response::json(["data" => "you can not do this"], 403);
+        return  response()->json(["data" => "you can not do this"], 403);
 
     }
 
@@ -77,12 +76,12 @@ class InvitationController extends Controller
 
         if($invitation->isOwner()){
             $invitation->delete();
-            return \Response::json(['data' => null], 204);
+            return response()->json(['data' => null], 204);
         }
 
 
 
-        return \Response::json(["data" => "you can not do that"], 403);
+        return response()->json(["data" => "you can not do that"], 403);
 
     }
 }
