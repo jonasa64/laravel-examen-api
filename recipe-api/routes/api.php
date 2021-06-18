@@ -19,19 +19,20 @@ use App\Http\Controllers\AcceptFriendshipsController;
 */
 
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
 
 Route::group(['middleware' => ['auth:sanctum']], function(){
-    Route::post('/invite', [InvitedPersonController::class, 'store']);
-    Route::put('/invite/{invitedPerson}', [InvitedPersonController::class, 'update']);
-    Route::post('/friendship/{recipient}', [FiendshipController::class, 'store']);
-    Route::delete('/friendship/{user}', [FiendshipController::class] );
-    Route::get('/accept/friendship/',[AcceptFriendshipsController::class, 'index']);
-    Route::post('/accept/friendship/{sender}', [AcceptFriendshipsController::class, 'store']);
-    Route::delete('/accept/friendship/{sender}', [AcceptFriendshipsController::class, 'destroy']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('invite', [InvitedPersonController::class, 'store']);
+    Route::put('invite/{invitedPerson}', [InvitedPersonController::class, 'update']);
+    Route::post('friendship/{recipient}', [FiendshipController::class, 'store']);
+    Route::delete('friendship/{user}', [FiendshipController::class] );
+    Route::get('accept/friendship/',[AcceptFriendshipsController::class, 'index']);
+    Route::post('accept/friendship/{sender}', [AcceptFriendshipsController::class, 'store']);
+    Route::delete('accept/friendship/{sender}', [AcceptFriendshipsController::class, 'destroy']);
+    Route::post('logout', [AuthController::class, 'logout']);
     Route::apiResources(['invitations' => InvitationController::class]);
+    Route:get('friendship/{query}', [FiendshipController::class, 'search']);
 });
 
 

@@ -1,18 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Response;
 use App\Models\Fiendship;
 use App\Models\User;
-
+use Illuminate\Http\Request;
 class FiendshipController extends Controller
 {
 
     public function store(User $recipient)
     {
         if(auth()->id() == $recipient->id){
-            return \Response::json(["data" => "can di that"], 400);
+            return response()->json(["data" => "can di that"], 400);
         }
 
         $friendship = Fiendship::firstOrCreate([
@@ -20,7 +18,7 @@ class FiendshipController extends Controller
            'recipient_id' =>  $recipient->id
         ]);
 
-        return \Response::json(["data" => $friendship->fresh()->status], 201);
+        return response()->json(["data" => $friendship->fresh()->status], 201);
     }
 
     public function destroy(User $user)
@@ -29,7 +27,7 @@ class FiendshipController extends Controller
 
         if ($friendship->status === 'denied' && (int) $friendship->sender_id === auth()->id()) {
 
-            return Response::json([
+            return response()->json([
 
                 'friendship_status' => 'denied'
 
@@ -37,11 +35,16 @@ class FiendshipController extends Controller
 
         }
 
-        return Response::json([
+        return response()->json([
 
             'friendship_status' => $friendship->delete() ? 'deleted' : ''
 
         ]);
 
+    }
+
+    public function  search(Request $request) {
+       $users =  User::Where('name', 'like', "$request->name%")->get();
+       return response()->json(["users" => $users]);
     }
 }
