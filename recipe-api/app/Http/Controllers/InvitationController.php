@@ -46,7 +46,7 @@ class InvitationController extends Controller
 
     public function show(Invitation $invitation)
     {
-        $invitationWithPersons = $invitation->fresh('InvitedPersons');
+        $invitationWithPersons = $invitation->fresh('');
         return response()->json(["data" => $invitationWithPersons] , 200);
     }
 
